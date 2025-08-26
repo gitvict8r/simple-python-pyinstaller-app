@@ -15,6 +15,7 @@ pipeline {
             agent {
                 docker {
                     image 'qnib/pytest'
+                    args '-u root:root'
                 }
             }
             steps {
@@ -30,10 +31,14 @@ pipeline {
             agent {
                 docker {
                     image 'cdrx/pyinstaller-linux:python2' 
+                    args '-u root:root --entrypoint=""'
                 }
             }
             steps {
-                sh 'pyinstaller --onefile sources/add2vals.py' 
+                sh 'whoami'
+                sh 'pwd'
+                sh 'ls -l sources/add2vals.py'
+                sh 'export SRCDIR="/var/lib/jenkins/workspace/simple-python-pyinstaller-app" && /entrypoint.sh "pyinstaller -F sources/add2vals.py"'
             }
             post {
                 success {
